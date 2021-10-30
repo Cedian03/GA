@@ -4,7 +4,7 @@ import os
 from dataclasses import dataclass
 
 from cryptography.hazmat.primitives import serialization
-from cryptography.hazmat.primitives.asymmetric import ec, rsa
+from cryptography.hazmat.primitives.asymmetric import rsa
 
 os.chdir(r"C:\Users\Algot\Documents\GA\py_client")
 
@@ -43,7 +43,7 @@ def load_contacts():
                     load_public_key("contacts/" + contact["public_key"])))
     return contacts
 
-def recive_input(condition=()):
+def user_input(condition: function = ()):
     if not condition: return input(">>> ")
     while True:
         inp = input(">>> ")
@@ -59,11 +59,13 @@ def send_message():
     def check(inp):
         return inp.isnumeric() and inp in [str(x) for x in range(len(CONTACTS))]
 
-    inp = recive_input(check)
+    inp = user_input(check)
     reciver = CONTACTS[int(inp)]
 
     print(f"What do you want to send to {reciver.name}?")
-    message = recive_input()
+    message = user_input()
+
+    print(encrypt_message(reciver.public_key, message))
 
 def read_messages():
     pass
@@ -104,8 +106,9 @@ def main():
             quit()
         try:
             cmd.get(inp, lambda: print("Invalid command"))()
-        except:
+        except Exception as e:
             print("An error ocurred while executing command")
+            print(e)
 
 if __name__ == "__main__":
     main()

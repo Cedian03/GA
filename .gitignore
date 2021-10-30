@@ -1,4 +1,4 @@
-/__pycache__/
-/backup/
+__pycache__
+/old/
 /py_client/contacts/*
 /py_client/self/*
