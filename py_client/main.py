@@ -6,7 +6,7 @@ from dataclasses import dataclass
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import rsa
 
-os.chdir(r"py_client")
+from module import *
 
 @dataclass(unsafe_hash=True)
 class Contact:
@@ -16,19 +16,6 @@ class Contact:
     public_key: rsa.RSAPublicKey
 
 clearConsole = lambda: os.system('cls' if os.name in ('nt', 'dos') else 'clear')
-
-# load private key from file
-def load_private_key(file_path):
-    return serialization.load_pem_private_key(
-        open(file_path, "rb").read(),
-        password=None
-    )
-
-# load public key from file
-def load_public_key(file_path):
-    return serialization.load_pem_public_key(
-        open(file_path, "rb").read()
-    )
 
 # load contacts from contacts folder 
 def load_contacts():
@@ -93,7 +80,7 @@ def main():
 
     else:
         print("Initialising... OK")
-        clearConsole() # Clear console after init
+        # clearConsole() # Clear console after init
 
     cmd =  {"help": h,
             "send": send_message,
@@ -112,3 +99,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
