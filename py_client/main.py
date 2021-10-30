@@ -52,7 +52,7 @@ def send_message():
     print(f"What do you want to send to {reciver.name}?")
     message = user_input()
 
-    print(encrypt_message(reciver.public_key, message))
+    encrypt_message(message, reciver.public_key)
 
 def read_messages():
     pass
@@ -91,11 +91,11 @@ def main():
         if inp == "quit": 
             clearConsole()
             quit()
-        try:
-            cmd.get(inp, lambda: print("Invalid command"))()
-        except Exception as e:
-            print("An error ocurred while executing command")
-            print(e)
+        # try:
+        cmd.get(inp, lambda: print("Invalid command"))()
+        # except Exception as e:
+        #     print("An error ocurred while executing command")
+        #     print(e)
 
 if __name__ == "__main__":
     main()

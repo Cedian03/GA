@@ -1,3 +1,6 @@
+from base64 import decodebytes
+from base64 import encodebytes
+
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import padding
@@ -15,10 +18,10 @@ def load_public_key(file_path: str):
         open(file_path, "rb").read()
     )
 
-# 
+# encrypt string message to bytes 
 def encrypt_message(message, encryption_key):
     message_bytes = bytes(message, "utf-8")
-    ciphertext_bytes = encryption_key.encrypt(
+    cipher_bytes = encryption_key.encrypt(
         message_bytes,
         padding.OAEP(
             mgf=padding.MGF1(algorithm=hashes.SHA256()),
@@ -26,4 +29,8 @@ def encrypt_message(message, encryption_key):
             label=None
         )
     )
-    print(ciphertext_bytes)
+    # bytes would be sent via serial to node
+    # bytes are converted to b64 for readablity 
+    cipher_base64 = encodebytes(cipher_bytes)
+    print(cipher_base64)
+    
