@@ -9,7 +9,7 @@ from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import serialization  
 from cryptography.hazmat.primitives.asymmetric import rsa  
 
-chdir(r"C:\Users\Algot\Documents\GA\py_client")
+chdir(r"py_client")
 
 def keygen():
     # heads up if private and/or public key already exist

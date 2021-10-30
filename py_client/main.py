@@ -6,7 +6,7 @@ from dataclasses import dataclass
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import rsa
 
-os.chdir(r"C:\Users\Algot\Documents\GA\py_client")
+os.chdir(r"py_client")
 
 @dataclass(unsafe_hash=True)
 class Contact:
@@ -43,7 +43,7 @@ def load_contacts():
                     load_public_key("contacts/" + contact["public_key"])))
     return contacts
 
-def user_input(condition: function = ()):
+def user_input(condition=()):
     if not condition: return input(">>> ")
     while True:
         inp = input(">>> ")
