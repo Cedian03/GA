@@ -61,9 +61,12 @@ def load_contacts():
                     contact["name"], 
                     contact["comment"], 
                     load_public_key("contacts/" + contact["public_key"])))
+    return contacts
 
 def send_message():
-    [print(contact.name) for contact in CONTACTS]
+    print()
+    for index, contact in enumerate(CONTACTS):
+        print(f"[{index}] {contact.name}: '{contact.comment}'") 
 
 def read_messages():
     pass
@@ -102,11 +105,10 @@ def main():
         if inp == "quit": 
             clearConsole()
             quit()
-        
         try:
-            cmd[inp]()
+            cmd.get(inp, lambda: print("Invalid command"))()
         except:
-            print("Invalid command")
+            print("An error ocurred while executing command")
 
 if __name__ == "__main__":
     main()
