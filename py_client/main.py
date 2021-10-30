@@ -17,24 +17,6 @@ class Contact:
 
 clearConsole = lambda: os.system('cls' if os.name in ('nt', 'dos') else 'clear')
 
-# def debug(log_info):
-#     def decorator(func):
-#         def wrapper(*args):
-#             if LOG_TOGGLE:
-#                 print(log_info + "...", end=" ")
-#                 try: 
-#                     result = func(*args)
-#                 except:
-#                     print("ERROR")
-#                 else:
-#                     print("OK")
-#             else:
-#                 result = func(*args)
-
-#             return result
-#         return wrapper
-#     return decorator
-
 # load private key from file
 def load_private_key(file_path):
     return serialization.load_pem_private_key(
@@ -61,7 +43,8 @@ def load_contacts():
                     load_public_key("contacts/" + contact["public_key"])))
     return contacts
 
-def recive_input(condition):
+def recive_input(condition=()):
+    if not condition: return input(">>> ")
     while True:
         inp = input(">>> ")
         if condition(inp):
@@ -77,8 +60,10 @@ def send_message():
         return inp.isnumeric() and inp in [str(x) for x in range(len(CONTACTS))]
 
     inp = recive_input(check)
+    reciver = CONTACTS[int(inp)]
 
-    print(inp)
+    print(f"What do you want to send to {reciver.name}?")
+    message = recive_input()
 
 def read_messages():
     pass
