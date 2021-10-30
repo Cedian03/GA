@@ -14,7 +14,8 @@ chdir(r"C:\Users\Algot\Documents\GA\py_client")
 def keygen():
     # heads up if private and/or public key already exist
     if isfile("self/private.pem") or isfile("self/public.pem"):
-        if input("Private key and/or public key already exists. Are you sure you want to generate a new key pair (this will override old keys) y/N: ").lower() != "y":
+        print("Private key and/or public key already exists. Are you sure you want to generate a new key pair (this will override old keys) [y/N]")
+        if input(">>> ").lower() != "y":
             raise Exception
 
     # save file helper  
