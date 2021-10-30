@@ -6,6 +6,8 @@ from dataclasses import dataclass
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import rsa
 
+from debug import debug
+
 os.chdir(r"C:\Users\Algot\Documents\GA\py_client")
 
 @dataclass(unsafe_hash=True)
@@ -15,15 +17,10 @@ class Contact:
     comment: str
     public_key: rsa.RSAPublicKey
 
-def clearConsole():
-    command = 'clear'
-    if os.name in ('nt', 'dos'):  # If Machine is running on Windows, use cls
-        command = 'cls'
-    os.system(command)
-
-clearConsole()
+clearConsole = lambda: os.system('cls' if os.name in ('nt', 'dos') else 'clear')
 
 # load private key from file
+@debug("Loading private key")
 def load_private_key(file_path):
     return serialization.load_pem_private_key(
         open(file_path, "rb").read(),
@@ -31,12 +28,14 @@ def load_private_key(file_path):
     )
 
 # load public key from file
+@debug("Loading public key")
 def load_public_key(file_path):
     return serialization.load_pem_public_key(
         open(file_path, "rb").read()
     )
 
 # load contacts from contacts folder 
+@debug("Loading contacts")
 def load_contacts():
     contacts = []
     for filename in glob.iglob("contacts/*.json"):
@@ -51,19 +50,21 @@ def load_contacts():
 
 def main():
     try: # init
-        print("Starting")
+        print("Initialising")
 
-        print("Loading keys")
         global CONTACTS 
         CONTACTS = load_contacts()
 
-        print("Loading contacts")
+        print("Loading contacts...", end=" ")
         global PRIVATE_KEY 
         PRIVATE_KEY = load_private_key("self/private.pem")
+        print("OK")
 
     except:
         print("An error occured on start. ")
         quit()
+
+    # clearConsole() # Clear console after init
 
     while True:
         input(">>> ")
