@@ -2,11 +2,11 @@ import glob
 import json
 import os 
 from dataclasses import dataclass
+from inspect import stack
+from typing import Tuple
 
 from cryptography.hazmat.primitives import serialization
-from cryptography.hazmat.primitives.asymmetric import rsa
-
-from debug import debug
+from cryptography.hazmat.primitives.asymmetric import ec, rsa
 
 os.chdir(r"C:\Users\Algot\Documents\GA\py_client")
 
@@ -19,8 +19,25 @@ class Contact:
 
 clearConsole = lambda: os.system('cls' if os.name in ('nt', 'dos') else 'clear')
 
+# def debug(log_info):
+#     def decorator(func):
+#         def wrapper(*args):
+#             if LOG_TOGGLE:
+#                 print(log_info + "...", end=" ")
+#                 try: 
+#                     result = func(*args)
+#                 except:
+#                     print("ERROR")
+#                 else:
+#                     print("OK")
+#             else:
+#                 result = func(*args)
+
+#             return result
+#         return wrapper
+#     return decorator
+
 # load private key from file
-@debug("Loading private key")
 def load_private_key(file_path):
     return serialization.load_pem_private_key(
         open(file_path, "rb").read(),
@@ -28,14 +45,12 @@ def load_private_key(file_path):
     )
 
 # load public key from file
-@debug("Loading public key")
 def load_public_key(file_path):
     return serialization.load_pem_public_key(
         open(file_path, "rb").read()
     )
 
 # load contacts from contacts folder 
-@debug("Loading contacts")
 def load_contacts():
     contacts = []
     for filename in glob.iglob("contacts/*.json"):
@@ -47,30 +62,51 @@ def load_contacts():
                     contact["comment"], 
                     load_public_key("contacts/" + contact["public_key"])))
 
+def send_message():
+    [print(contact.name) for contact in CONTACTS]
+
+def read_messages():
+    pass
+
+def h():
+    print("no help")
 
 def main():
     try: # init
-        print("Initialising")
-
-        global CONTACTS 
-        CONTACTS = load_contacts()
+        print("Initialising...")
 
         print("Loading contacts...", end=" ")
+        global CONTACTS 
+        CONTACTS = load_contacts()
+        print("OK")
+
+        print("Loading private key...", end=" ")
         global PRIVATE_KEY 
         PRIVATE_KEY = load_private_key("self/private.pem")
         print("OK")
 
     except:
-        print("An error occured on start. ")
+        print("\nAn error occured while Initialising. ")
         quit()
 
-    # clearConsole() # Clear console after init
+    else:
+        print("Initialising... OK")
+        clearConsole() # Clear console after init
+
+    cmd =  {"help": h,
+            "send": send_message,
+            "read": read_messages}
 
     while True:
-        input(">>> ")
-
-    print("Closing...")
-    quit()
+        inp = input(">>> ").lower()
+        if inp == "quit": 
+            clearConsole()
+            quit()
+        
+        try:
+            cmd[inp]()
+        except:
+            print("Invalid command")
 
 if __name__ == "__main__":
     main()
