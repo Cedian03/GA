@@ -2,8 +2,6 @@ import glob
 import json
 import os 
 from dataclasses import dataclass
-from inspect import stack
-from typing import Tuple
 
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import ec, rsa
@@ -63,10 +61,24 @@ def load_contacts():
                     load_public_key("contacts/" + contact["public_key"])))
     return contacts
 
+def recive_input(condition):
+    while True:
+        inp = input(">>> ")
+        if condition(inp):
+            break
+    return inp
+
 def send_message():
-    print()
+    print(f"Please choose a contact to recive the message [0-{len(CONTACTS) - 1}]")
     for index, contact in enumerate(CONTACTS):
         print(f"[{index}] {contact.name}: '{contact.comment}'") 
+
+    def check(inp):
+        return inp.isnumeric() and inp in [str(x) for x in range(len(CONTACTS))]
+
+    inp = recive_input(check)
+
+    print(inp)
 
 def read_messages():
     pass
