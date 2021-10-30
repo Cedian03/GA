@@ -15,8 +15,13 @@ class Contact:
     comment: str
     public_key: rsa.RSAPublicKey
 
-class Client:
-    pass
+def clearConsole():
+    command = 'clear'
+    if os.name in ('nt', 'dos'):  # If Machine is running on Windows, use cls
+        command = 'cls'
+    os.system(command)
+
+clearConsole()
 
 # load private key from file
 def load_private_key(file_path):
@@ -43,12 +48,28 @@ def load_contacts():
                     contact["comment"], 
                     load_public_key("contacts/" + contact["public_key"])))
 
-def main():
 
-    global CONTACTS 
-    CONTACTS = load_contacts()
-    global PRIVATE_KEY 
-    PRIVATE_KEY = load_private_key("self/private.pem")
+def main():
+    try: # init
+        print("Starting")
+
+        print("Loading keys")
+        global CONTACTS 
+        CONTACTS = load_contacts()
+
+        print("Loading contacts")
+        global PRIVATE_KEY 
+        PRIVATE_KEY = load_private_key("self/private.pem")
+
+    except:
+        print("An error occured on start. ")
+        quit()
+
+    while True:
+        input(">>> ")
+
+    print("Closing...")
+    quit()
 
 if __name__ == "__main__":
     main()
