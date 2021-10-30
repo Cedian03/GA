@@ -6,11 +6,17 @@ from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import padding
 
 # load private key from file
-def load_private_key(file_path: str):
-    return serialization.load_pem_private_key(
-        open(file_path, "rb").read(),
+PRIVATE_KEY = serialization.load_pem_private_key(
+        open("self/private.pem", "rb").read(),
         password=None
     )
+
+# # load private key from file
+# def load_private_key(file_path: str):
+#     return serialization.load_pem_private_key(
+#         open(file_path, "rb").read(),
+#         password=None
+#     )
 
 # load public key from file
 def load_public_key(file_path: str):
@@ -31,6 +37,19 @@ def encrypt_message(message, encryption_key):
     )
     # bytes would be sent via serial to node
     # bytes are converted to b64 for readablity 
-    cipher_base64 = encodebytes(cipher_bytes)
-    print(cipher_base64)
-    
+    cipher = encodebytes(cipher_bytes)
+    return cipher
+
+# decrypts bytes cipher to string 
+def decrypt_message(cipher):
+    cipher_bytes = decodebytes(cipher)
+    plain_bytes = PRIVATE_KEY.decrypt(
+        cipher_bytes,
+        padding.OAEP(
+            mgf=padding.MGF1(algorithm=hashes.SHA256()),
+            algorithm=hashes.SHA256(),
+            label=None
+        )
+    )
+    plain = plain_bytes.decode("utf-8")
+    return plain

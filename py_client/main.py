@@ -52,10 +52,14 @@ def send_message():
     print(f"What do you want to send to {reciver.name}?")
     message = user_input()
 
-    encrypt_message(message, reciver.public_key)
+    print(encrypt_message(message, reciver.public_key))
 
-def read_messages():
-    pass
+# this would not be used with real nodes, this is for manual use of the system only 
+def dec_message():
+    print("Please")
+    inp = user_input()
+    print(inp)
+    print(bytes(inp[:-1], "utf-8"))
 
 def h():
     print("no help")
@@ -69,22 +73,18 @@ def main():
         CONTACTS = load_contacts()
         print("OK")
 
-        print("Loading private key...", end=" ")
-        global PRIVATE_KEY 
-        PRIVATE_KEY = load_private_key("self/private.pem")
-        print("OK")
-
-    except:
-        print("\nAn error occured while Initialising. ")
+    except Exception as e:
+        print("\nAn error occured while initialising. ")
+        print(e)
         quit()
 
     else:
         print("Initialising... OK")
-        # clearConsole() # Clear console after init
+        clearConsole() # Clear console after init
 
     cmd =  {"help": h,
             "send": send_message,
-            "read": read_messages}
+            "manual": dec_message}
 
     while True:
         inp = input(">>> ").lower()
