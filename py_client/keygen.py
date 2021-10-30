@@ -2,11 +2,14 @@
 
 https://gist.github.com/ostinelli/aeebf4643b7a531c248a353cee8b9461
 """
+from os import chdir
 from os.path import isfile
 
 from cryptography.hazmat.backends import default_backend  
 from cryptography.hazmat.primitives import serialization  
 from cryptography.hazmat.primitives.asymmetric import rsa  
+
+chdir(r"C:\Users\Algot\Documents\GA\py_client")
 
 def keygen():
     # heads up if private and/or public key already exist

@@ -15,6 +15,16 @@ class Contact:
     comment: str
     public_key: rsa.RSAPublicKey
 
+class Client:
+    pass
+
+# load private key from file
+def load_private_key(file_path):
+    return serialization.load_pem_private_key(
+        open(file_path, "rb").read(),
+        password=None
+    )
+
 # load public key from file
 def load_public_key(file_path):
     return serialization.load_pem_public_key(
@@ -27,10 +37,18 @@ def load_contacts():
     for filename in glob.iglob("contacts/*.json"):
         with open(filename, "rb") as f:
             contact = json.load(f)
-            contacts.append(Contact(contact["name"], contact["comment"], load_public_key("contacts/" + contact["public_key"])))
+            contacts.append(
+                Contact(
+                    contact["name"], 
+                    contact["comment"], 
+                    load_public_key("contacts/" + contact["public_key"])))
 
 def main():
-    load_contacts()
+
+    global CONTACTS 
+    CONTACTS = load_contacts()
+    global PRIVATE_KEY 
+    PRIVATE_KEY = load_private_key("self/private.pem")
 
 if __name__ == "__main__":
     main()
