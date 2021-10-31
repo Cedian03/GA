@@ -1,20 +1,26 @@
 import glob
 import json
 import os 
+from tkinter import Tk
 from dataclasses import dataclass
 
 from cryptography.hazmat.primitives import serialization
-from cryptography.hazmat.primitives.asymmetric import rsa
+from cryptography.hazmat.primitives.asymmetric.rsa import RSAPublicKey
 
 from module import *
-from commands import * 
 
 @dataclass(unsafe_hash=True)
 class Contact:
     """Class for storing contact data"""
     name: str
     comment: str
-    public_key: rsa.RSAPublicKey
+    public_key: RSAPublicKey
+
+
+
+# clear console 
+def clear_console():
+    return os.system("cls" if os.name in ("nt", "dos") else "clear")
 
 # load contacts from contacts folder 
 def load_contacts():
@@ -39,7 +45,7 @@ def user_input(condition=()):
     return inp
 
 def send_message():
-    print(f"Please choose a contact to recive the message [0-{len(CONTACTS) - 1}]")
+    print("Please choose a contact to recive the message [0-{}]".format(len(CONTACTS) - 1))
     for index, contact in enumerate(CONTACTS):
         print(f"[{index}] {contact.name}: '{contact.comment}'") 
 
@@ -49,20 +55,36 @@ def send_message():
     inp = user_input(check)
     reciver = CONTACTS[int(inp)]
 
-    print(f"What do you want to send to {reciver.name}?")
+    print("Please enter your message to {}?".format(reciver.name))
     message = user_input()
 
-    print(encrypt_message(message, reciver.public_key))
+    return encrypt_message(message, reciver.public_key)
 
 # this would not be used with real nodes, this is for manual use of the system only 
-def dec_message():
-    print("Please")
-    inp = user_input()
-    print(inp)
-    print(bytes(inp[:-1], "utf-8"))
+def manual_send_message():
+    message_bytes = send_message()
+    message = message_bytes.decode("utf-8")
 
-def h():
-    print("no help")
+    r.clipboard_clear()
+    r.clipboard_append(message)
+    r.update() # now it stays on the clipboard after the window is closed
+    print("Copied ciphertext to clipboard")
+
+# 
+def read_messages():
+    pass
+
+def manual_read_messages():
+    cipher = r.clipboard_get()
+    cipher_bytes = bytes(cipher, "utf-8")
+    print(decrypt_message(cipher_bytes))
+
+# send help
+def cmd_help():
+    for CMD in COMMANDS:
+        print("{}\t{}".format(CMD, COMMANDS.get(CMD)[1]))
+
+
 
 def main():
     try: # init
@@ -73,28 +95,36 @@ def main():
         CONTACTS = load_contacts()
         print("OK")
 
+        print("Loading commands...", end=" ")
+        global COMMANDS
+        COMMANDS = {"HELP":  (cmd_help, "This help list"),
+                    "QUIT":  (quit, "Finito"), 
+                    "SEND":  (send_message, "Send a message using connected node"),
+                    "READ":  (read_messages, "Read messages from memory and connected node"),
+                    "MSEND": (manual_send_message, "Manual use only"),
+                    "MREAD": (manual_read_messages, "Manual use only")}
+        print("OK")
+
+        print("Setting up tkinter...", end=" ")
+        global r 
+        r = Tk()
+        r.withdraw()
+        print("OK")
+
     except Exception as e:
-        print("\nAn error occured while initialising. ")
+        print("ERROR\nAn error occured while initialising. ")
         print(e)
         quit()
 
     else:
         print("Initialising... OK")
-        clearConsole() # Clear console after init
-
-    cmd =  {"help": h,
-            "send": send_message,
-            "read": read_messages,
-            "msend": manual_send_message,
-            "mread": manual_read_message}
+        clear_console() # clear console after init
+        # cmd_help() # start terminal with help list
 
     while True:
-        inp = input(">>> ").lower()
-        if inp == "quit": 
-            clearConsole()
-            quit()
+        inp = input(">>> ").upper()
         # try:
-        cmd.get(inp, lambda: print("Invalid command"))()
+        COMMANDS.get(inp, lambda: print("Invalid command"))[0]()
         # except Exception as e:
         #     print("An error ocurred while executing command")
         #     print(e)
