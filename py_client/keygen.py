@@ -9,8 +9,6 @@ from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import serialization  
 from cryptography.hazmat.primitives.asymmetric import rsa  
 
-chdir(r"py_client")
-
 def keygen():
     # heads up if private and/or public key already exist
     if isfile("self/private.pem") or isfile("self/public.pem"):
