@@ -7,6 +7,7 @@ from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import rsa
 
 from module import *
+from commands import * 
 
 @dataclass(unsafe_hash=True)
 class Contact:
@@ -14,8 +15,6 @@ class Contact:
     name: str
     comment: str
     public_key: rsa.RSAPublicKey
-
-clearConsole = lambda: os.system('cls' if os.name in ('nt', 'dos') else 'clear')
 
 # load contacts from contacts folder 
 def load_contacts():
@@ -30,6 +29,7 @@ def load_contacts():
                     load_public_key("contacts/" + contact["public_key"])))
     return contacts
 
+# input() but preconfigured to send >>> and have check condition
 def user_input(condition=()):
     if not condition: return input(">>> ")
     while True:
@@ -84,7 +84,9 @@ def main():
 
     cmd =  {"help": h,
             "send": send_message,
-            "manual": dec_message}
+            "read": read_messages,
+            "msend": manual_send_message,
+            "mread": manual_read_message}
 
     while True:
         inp = input(">>> ").lower()
