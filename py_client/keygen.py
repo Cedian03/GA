@@ -2,7 +2,6 @@
 
 https://gist.github.com/ostinelli/aeebf4643b7a531c248a353cee8b9461
 """
-from os import chdir
 from os.path import isfile
 
 from cryptography.hazmat.backends import default_backend  
@@ -18,7 +17,7 @@ def keygen():
 
     # save file helper  
     def save_file(filename, content):  
-        f = open(f"self/{filename}", "wb")  
+        f = open("self/{}".format(filename), "wb")  
         f.write(content) 
         f.close()  
     

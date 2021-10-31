@@ -46,7 +46,7 @@ def user_input(condition=()):
 def send_message():
     print("Please choose a contact to recive the message [0-{}]".format(len(CONTACTS) - 1))
     for index, contact in enumerate(CONTACTS):
-        print(f"[{index}] {contact.name}: '{contact.comment}'") 
+        print("[{}] {}: '{}'".format(index, contact.name, contact.comment)) 
 
     def check(inp):
         return inp.isnumeric() and inp in [str(x) for x in range(len(CONTACTS))]
@@ -77,7 +77,24 @@ def read_messages():
 def manual_read_messages():
     cipher = r.clipboard_get()
     cipher_bytes = bytes(cipher, "utf-8")
-    print(decrypt_message(cipher_bytes))
+    plain_bytes = decrypt_message(cipher_bytes)
+    print(plain_bytes.decode("utf-8"))
+
+    print("Please copy message signature (or don't)")
+    input("...\r")
+
+    signature = r.clipboard_get()
+    signature_bytes = bytes(signature, "utf-8")
+    for contact in CONTACTS:
+        try: 
+            verify_bytes(contact.public_key, signature_bytes, plain_bytes)
+        except:
+            pass
+        else:
+            print("Message author verifed as {}".format(contact.name))
+            break
+    else:
+        print("Message author could not me verified")
 
 # help command
 def cmd_help():
@@ -121,11 +138,11 @@ def main():
 
     while True:
         inp = input(">>> ").upper()
-        # try:
-        COMMANDS.get(inp, lambda: print("Invalid command"))[0]()
-        # except Exception as e:
-        #     print("An error ocurred while executing command")
-        #     print(e)
+        try:
+            COMMANDS.get(inp, lambda: print("Invalid command"))[0]()
+        except Exception as e:
+            print("An error ocurred while executing command")
+            print(e)
 
 if __name__ == "__main__":
     main()

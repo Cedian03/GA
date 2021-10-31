@@ -37,10 +37,10 @@ def encrypt_message(message, encryption_key):
     )
     # bytes would be sent via serial to node
     # bytes are converted to b64 for readablity 
-    cipher = encodebytes(cipher_bytes)
-    return cipher
+    cipher_base64 = encodebytes(cipher_bytes)
+    return cipher_base64
 
-# decrypts bytes cipher to string 
+# decrypts bytes cipher to string and bytes
 def decrypt_message(cipher):
     cipher_bytes = decodebytes(cipher)
     plain_bytes = PRIVATE_KEY.decrypt(
@@ -51,5 +51,15 @@ def decrypt_message(cipher):
             label=None
         )
     )
-    plain = plain_bytes.decode("utf-8")
-    return plain
+    return plain_bytes
+
+def verify_bytes(verification_key, signature: bytes, plaintext: bytes):
+    verification_key.verify(
+        signature,
+        plaintext,
+        padding.PSS(
+            mgf=padding.MGF1(hashes.SHA256()),
+            salt_length=padding.PSS.MAX_LENGTH
+        ),
+        hashes.SHA256()
+    )
