@@ -1,4 +1,5 @@
 import glob
+from inspect import signature
 import json
 import os 
 from tkinter import Tk
@@ -19,6 +20,12 @@ class Contact:
 # clear console 
 def clear_console():
     return os.system("cls" if os.name in ("nt", "dos") else "clear")
+
+# copy to clipboard
+def copy(text: str):
+    r.clipboard_clear()
+    r.clipboard_append(text)
+    r.update() # now it stays on the clipboard after the window is closed
 
 # load contacts from contacts folder 
 def load_contacts():
@@ -56,18 +63,25 @@ def send_message():
 
     print("Please enter your message to {}?".format(reciver.name))
     message = user_input()
+    message_bytes = bytes(message, "utf-8")
 
-    return encrypt_message(message, reciver.public_key)
+    return encrypt_message(message_bytes, reciver.public_key)
 
 # for manual use of the system
 def manual_send_message():
-    message_bytes = send_message()
+    message_bytes, signature_bytes = send_message()
     message = message_bytes.decode("utf-8")
+    signature = signature_bytes.decode("utf-8")
 
-    r.clipboard_clear()
-    r.clipboard_append(message)
-    r.update() # now it stays on the clipboard after the window is closed
+    verify_bytes(PRIVATE_KEY.public_key(), signature_bytes, message_bytes)
+
+    copy(message)
     print("Copied ciphertext to clipboard")
+
+    print("Continue to copy signature")
+    input("...")
+    copy(signature)
+    print("Copied signature to clipboard")
 
 # read stored messages
 def read_messages():
@@ -89,7 +103,7 @@ def manual_read_messages():
         try: 
             verify_bytes(contact.public_key, signature_bytes, plain_bytes)
         except:
-            pass
+            print("Failed to verify {} as author".format(contact.name))
         else:
             print("Message author verifed as {}".format(contact.name))
             break
