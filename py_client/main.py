@@ -44,6 +44,7 @@ def user_input(condition=()):
             break
     return inp
 
+# send message 
 def send_message():
     print("Please choose a contact to recive the message [0-{}]".format(len(CONTACTS) - 1))
     for index, contact in enumerate(CONTACTS):
@@ -60,7 +61,7 @@ def send_message():
 
     return encrypt_message(message, reciver.public_key)
 
-# this would not be used with real nodes, this is for manual use of the system only 
+# for manual use of the system
 def manual_send_message():
     message_bytes = send_message()
     message = message_bytes.decode("utf-8")
@@ -70,21 +71,20 @@ def manual_send_message():
     r.update() # now it stays on the clipboard after the window is closed
     print("Copied ciphertext to clipboard")
 
-# 
+# read stored messages
 def read_messages():
     pass
 
+# for manual use of the system
 def manual_read_messages():
     cipher = r.clipboard_get()
     cipher_bytes = bytes(cipher, "utf-8")
     print(decrypt_message(cipher_bytes))
 
-# send help
+# help command
 def cmd_help():
     for CMD in COMMANDS:
         print("{}\t{}".format(CMD, COMMANDS.get(CMD)[1]))
-
-
 
 def main():
     try: # init
