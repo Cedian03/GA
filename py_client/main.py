@@ -16,8 +16,6 @@ class Contact:
     comment: str
     public_key: RSAPublicKey
 
-
-
 # clear console 
 def clear_console():
     return os.system("cls" if os.name in ("nt", "dos") else "clear")
