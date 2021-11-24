@@ -12,6 +12,8 @@ PRIVATE_KEY = serialization.load_pem_private_key(
         password=None
     )
 
+PUBLIC_KEY = PRIVATE_KEY.public_key()
+
 # # load private key from file
 # def load_private_key(file_path: str):
 #     return serialization.load_pem_private_key(
@@ -47,6 +49,7 @@ def encrypt_message(message_bytes: bytes, encryption_key: RSAPublicKey):
 
     # bytes would be sent via serial to node
     # bytes are converted to b64 for readablity 
+
     cipher_base64 = encodebytes(cipher_bytes)
     signature_base64 = encodebytes(signature_bytes)
     return cipher_base64, signature_base64
@@ -77,11 +80,11 @@ def sign_bytes(message: bytes):
     return signature_bytes
 
 
-# verify bytes with public key, signature and plaintext
-def verify_bytes(verification_key: RSAPublicKey, signature: bytes, plaintext: bytes):
-    verification_key.verify(
+# verify bytes with public key, signature and message
+def verify_bytes(verification_key: RSAPublicKey, signature: bytes, message: bytes):
+        verification_key.verify(
         signature,
-        plaintext,
+        message,
         padding.PSS(
             mgf=padding.MGF1(hashes.SHA256()),
             salt_length=padding.PSS.MAX_LENGTH

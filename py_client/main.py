@@ -99,6 +99,9 @@ def manual_read_messages():
 
     signature = r.clipboard_get()
     signature_bytes = bytes(signature, "utf-8")
+
+    print(signature_bytes)
+
     for contact in CONTACTS:
         try: 
             verify_bytes(contact.public_key, signature_bytes, plain_bytes)
