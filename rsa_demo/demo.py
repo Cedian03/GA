@@ -13,7 +13,7 @@ def lcm(a: int, b: int):
     """
     return (a * b) // gcd(a, b)
 
-def clf(a: int, b: int):
+def ctf(a: int, b: int):
     """
     """
     return lcm(a - 1, b - 1)
@@ -42,18 +42,20 @@ def mmi(a: int, m: int):
     
     return x
 
-# Choose two distinct prime numbers, p and q 
+# Choose two distinct prime numbers, such as
 p = 61
 q = 53 
 
-# Compute n, such as n = pq 
-n = p * q
+# Compute n = pq giving
+n = p * q # => 3233
 
-# Compute the Carmichael's lambda function of p and q to 
-A = clf(p, q) # A used instead of lambda
+# Compute the Carmichael's totient function of the product as ctf(n) = lcm(p − 1, q − 1) giving 
+x = ctf(p, q) # => 780 # x used to represent the variable
 
+# Choose any number 1 < e < 780 that is coprime to 780. Choosing a prime number for e leaves us only to check that e is not a divisor of 780.
 e = 17
 
-d = mmi(e, A)
+# Compute d, the modular multiplicative inverse of e (mod λ(n)) yielding,
+d = mmi(e, x) # => 413
 
 print(d)
