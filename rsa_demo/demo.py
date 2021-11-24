@@ -53,9 +53,10 @@ n = p * q # => 3233
 x = ctf(p, q) # => 780 # x used to represent the variable
 
 # Choose any number 1 < e < 780 that is coprime to 780. Choosing a prime number for e leaves us only to check that e is not a divisor of 780.
-e = 17
+e = 17 # 65537 is commonly used, alternatively 3 is used for speed 
 
 # Compute d, the modular multiplicative inverse of e (mod λ(n)) yielding,
 d = mmi(e, x) # => 413
 
-print(d)
+# (n, e) forms the public key 
+# (n, d) forms the private key 
