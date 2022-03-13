@@ -93,3 +93,5 @@
 
 # print(parse(foo))
 
+
+print(b"R" + b"hej")

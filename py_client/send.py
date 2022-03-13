@@ -55,7 +55,6 @@ def _sign_bytes(message_bytes: bytes):
     return signature_bytes
 
 def _bytes_to_dict(ciphertext_bytes: bytes, signature_bytes: bytes):
-    # print(ciphertext_bytes, signature_bytes)
     ciphertext_str = ciphertext_bytes.decode("latin1")
     signature_str = signature_bytes.decode("latin1")
 
@@ -74,17 +73,16 @@ def _serial_write(payload_bytes: bytes):
         if ser.out_waiting:
             print("Serial out not empty when sending", style="warning")
 
-        ser.write(payload_bytes)
-        # ser.write(b"HEJ HEJ HEJ")
+        ser.write(b"/S\n" + payload_bytes)
+        # ser.write(b"/r")
 
         # read
-        print(ser.in_waiting)
-        sleep(4)
-        print(ser.in_waiting)
-        print(ser.readline())
+        sleep(3)
+        while ser.in_waiting:
+            print(ser.readline())
 
 
 
 if __name__ == "__main__":
     send_message("Hej Charlie", "Charlie")
-        
+    
