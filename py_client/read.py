@@ -56,5 +56,7 @@ def _dict_to_bytes(payload_bytes: bytes):
 
     return ciphertext_bytes, signature_bytes
 
+
 if __name__ == "__main__":
     read_message()
+

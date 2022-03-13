@@ -82,7 +82,6 @@ def _serial_write(payload_bytes: bytes):
             print(ser.readline())
 
 
-
 if __name__ == "__main__":
     send_message("Hej Charlie", "Charlie")
-    
+
