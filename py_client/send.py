@@ -13,6 +13,7 @@ from util import SER_BAUDRATE
 from util import PRIVATE_KEY
 from util import SEND_BYTE
 
+
 @debugger
 def send_message(*args):
     """send message contact"""

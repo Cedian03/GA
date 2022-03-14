@@ -10,6 +10,7 @@ from util import SER_PORT
 from util import SER_BAUDRATE
 from util import PRIVATE_KEY
 
+
 def read_message(*args):
     with Serial(SER_PORT, SER_BAUDRATE, timeout=1) as ser:
         if ser.out_waiting:

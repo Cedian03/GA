@@ -1,4 +1,2 @@
 __pycache__
-
-node/ 
-!node/node.ino
+.py

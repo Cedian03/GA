@@ -6,6 +6,7 @@ import json
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric.rsa import RSAPublicKey
 
+
 DEBUG_MODE = True
 
 SER_PORT = "COM3"

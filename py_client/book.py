@@ -3,6 +3,7 @@ import json
 from util import Contact, debugger, success, info, warning, danger
 from util import load_contact
 
+
 @debugger
 def add_contact(*args):
     """add contact_name contact_info"""
