@@ -11,7 +11,7 @@ from util import SER_BAUDRATE
 from util import PRIVATE_KEY
 
 
-def read_message(*args):
+def read_messages(*args):
     with Serial(SER_PORT, SER_BAUDRATE, timeout=1) as ser:
         if ser.out_waiting:
             print("Serial out not empty when sending", style="warning")
@@ -29,7 +29,6 @@ def _decrypt_message(ciphertext_bytes: bytes):
             label=None
         )
     )
-
     return plaintext_bytes
 
 def _verify_sender(signature_bytes: bytes, plaintext_bytes: bytes):
@@ -54,10 +53,9 @@ def _dict_to_bytes(payload_bytes: bytes):
 
     ciphertext_bytes = ciphertext_str.encode("latin1")
     signature_bytes = signature_str.encode("latin1")
-
     return ciphertext_bytes, signature_bytes
 
 
 if __name__ == "__main__":
-    read_message()
+    read_messages()
 

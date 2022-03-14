@@ -6,7 +6,7 @@ from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.asymmetric import padding
 from cryptography.hazmat.primitives.asymmetric.rsa import RSAPublicKey
 
-from util import debug, debugger
+from util import debug, debugdeco, decodecorator
 from util import load_contact
 from util import SER_PORT
 from util import SER_BAUDRATE
@@ -14,12 +14,13 @@ from util import PRIVATE_KEY
 from util import SEND_BYTE
 
 
-@debugger
-def send_message(*args):
-    """send message contact"""
+@decodecorator("message_str", "contact_name")
+def send_message(**kwargs):
+    """send message contact
+    """
 
-    message_str = args[0]
-    contact_name = args[1]
+    message_str = kwargs["message_str"]
+    contact_name = kwargs["contact_name"]
 
     contact = load_contact(contact_name)
     
@@ -32,6 +33,7 @@ def send_message(*args):
     payload_bytes = _bytes_to_dict(ciphertext_bytes, signature_bytes)
     _serial_write(payload_bytes)
 
+@debugdeco
 def _encrypt_bytes(message_bytes: bytes, encryption_key: RSAPublicKey):
     ciphertext_bytes = encryption_key.encrypt(
         message_bytes,
@@ -41,9 +43,9 @@ def _encrypt_bytes(message_bytes: bytes, encryption_key: RSAPublicKey):
             label=None
         )
     )
-
     return ciphertext_bytes
 
+@debugdeco
 def _sign_bytes(message_bytes: bytes):
     signature_bytes = PRIVATE_KEY.sign(
         message_bytes,
@@ -53,9 +55,9 @@ def _sign_bytes(message_bytes: bytes):
         ),
         hashes.SHA256()
     )
-
     return signature_bytes
 
+@debugdeco
 def _bytes_to_dict(ciphertext_bytes: bytes, signature_bytes: bytes):
     ciphertext_str = ciphertext_bytes.decode("latin1")
     signature_str = signature_bytes.decode("latin1")
@@ -66,10 +68,9 @@ def _bytes_to_dict(ciphertext_bytes: bytes, signature_bytes: bytes):
     }
 
     payload_bytes = dumps(payload_dict).encode()
-
     return payload_bytes
 
-
+@debugdeco
 def _serial_write(payload_bytes: bytes):
     with Serial(SER_PORT, SER_BAUDRATE, timeout=1) as ser:
         if ser.out_waiting:

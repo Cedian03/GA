@@ -82,5 +82,5 @@ c = mod(m**e, n)
 # The private key is (n = 3233, d = 413). For an encrypted ciphertext c, the decryption function is
 m2 = mod(c**d, n)
 
-print(f"m: {m} => c: {c} => m2: {m2}")
+print(f"m: {m} => c: {c} => m2: {m2}") # => "m: 65 => c: 2790 => m2: 65"
 

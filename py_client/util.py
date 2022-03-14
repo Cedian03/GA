@@ -20,7 +20,7 @@ CONF_BYTE = b"C"
 class Contact:
     name: str
     info: str
-    public_key: RSAPublicKey
+    public_key: RSAPublicKey | None
 
 #rich: https://rich.readthedocs.io/en/latest/index.html
 from rich.console import Console
@@ -32,7 +32,6 @@ custom_theme = Theme({
     "warning": "bold yellow",
     "danger": "bold red"
 })
-
 console = Console(theme=custom_theme)
 
 def success(text):
@@ -50,59 +49,80 @@ def warning(text):
 def danger(text):
     return console.print(text, style="danger")
 
-# Decorator/wrapper for 
-def debugger(func):
-    def wrapper(*args, **kwargs):
-        try: 
-            debug(f"{func.__name__}{args, kwargs}")
-            return func(*args, **kwargs)
-        except Exception as e:
-            danger("There was an Error executing that command.")
-            print(e)
+def decodecorator(*kws):
+    def decorator(fun):
+        def wrapper(*args):
+            if len(args) >= len(kws):
+                if len(args) > len(kws): 
+                    debug("too many args")
+                kwargs = {}
+                for idx, i in enumerate(kws):
+                    kwargs[i] = args[idx]
+                return fun(**kwargs)
+            warning(f"Too few arguments provided, expected \"{kws}\"")
+        return wrapper
+    return decorator
 
+def debugdeco(func):
+    def wrapper(*args):
+        debug(f"{func.__name__}{args}")
+        try: 
+            res = func(*args)
+            debug(f"{func.__name__}{args} => {res}")
+            return res
+        except Exception as e:
+            if DEBUG_MODE:
+                debug(f"{func.__name__}{args} => {e}")
+            return None
     return wrapper
 
 # load private key from file
 try: 
-    f = open("self/private.pem", "rb").read()
-    PRIVATE_KEY = serialization.load_pem_private_key(f, password=None)
+    PRIVATE_KEY = serialization.load_pem_private_key(
+        open("self/private.pem", "rb").read(),
+        password=None
+    )
 except:
     danger(f"No private key was found at \"self/private.pem\".\nConsider using X to generate one")
 
-
 # loads any public key from file
+@debugdeco
 def load_public_key(file_name: str):
     try: 
-        f = open(f"contacts/{file_name.lower()}.pem", "rb").read()
-        return serialization.load_pem_public_key(f)   
+        public_key = serialization.load_pem_public_key(
+            open(f"contacts/{file_name.lower()}.pem", "rb").read()
+        ) 
+        return public_key  
     except: 
-        danger(f"No public key was found at \"contacts/{file_name}.pem\".")
-        exit()
+        warning(f"No public key found for \"{file_name}\"")
+        return None
     
 # 
+@debugdeco
 def load_contact(contact_name: str):    
-    with open("contacts.json", "rb") as f:
-        contacts = json.load(f)
-
+    contacts = load_contacts()
     for contact in contacts:
-        if contact["name"].lower() == contact_name.lower():
-            try:
-                return Contact(contact["name"], 
-                       contact["info"], 
-                       load_public_key(contact["name"]))
-            except:
-                return
+        if contact.name.lower() == contact_name.lower():
+            return contact
+    return None
 
-def list_contacts():
+# 
+@debugdeco
+def load_contacts():
     with open("contacts.json", "rb") as f:
-        contacts = json.load(f)
+        contacts_data = json.load(f)
 
-    contact_names = []
-    for i in contacts:
-        contact_names.append(i["name"])
+    contacts = []
+    for contact in contacts_data:
+        contacts.append(Contact(
+            contact["name"],
+            contact["info"],
+            load_public_key(contact["name"])
+        ))
+    return contacts
 
-    return contact_names
-
+#
+@debugdeco
 def parse(inp: str):
     def egg(x):
         if x != "":
@@ -131,7 +151,7 @@ def parse(inp: str):
 
 
 if __name__ == "__main__":
-    print(list_contacts())
+    print(load_contacts())
     print(parse("send \"Hej Charlie\" Charlie"))
     success("This is success.")
     info("This is info.")

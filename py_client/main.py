@@ -1,31 +1,15 @@
+from audioop import add
 from send import send_message
-from read import read
-from book import add_contact, list_contacts, remove_contact
+from read import read_messages
+from contacts import add_contact, list_contacts, remove_contact
 from util import danger, debug, parse, warning
 
 COMMANDS = {
-    "send": {
-        "info": "sup?",
-        "func": send_message
-    },
-    "read": {
-        "info": "",
-        "func": read
-    },
-    "list": {
-        "info": "Lists all avalible contacts.",
-        "useage": "list *search",
-        "func": list_contacts
-    },
-    "add": {
-        "info": "Add",
-        "func": add_contact
-    },
-    "remove": {
-        "info": "",
-        "useage": "",
-        "func": remove_contact
-    }
+    "send": send_message,
+    "read": read_messages,
+    "list": list_contacts,
+    "cadd": add_contact,
+    "crmv": remove_contact
 }
 
 def help(*args):
