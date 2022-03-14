@@ -37,8 +37,8 @@ console = Console(theme=custom_theme)
 def success(text):
     return console.print(text, style="success")
 
-def info(text):
-    return console.print(text, style="info")
+def info(*args, **kwargs):
+    return console.print(*args, **kwargs, style="info")
 
 def debug(text): 
     if DEBUG_MODE: return console.print(f"Debug: {text}", style="debug")

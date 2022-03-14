@@ -22,7 +22,7 @@ def loop():
         cmd = par.pop(0).lower()
 
         if cmd in COMMANDS.keys():
-            COMMANDS[cmd]["func"](*par)
+            COMMANDS[cmd](*par)
             
         else:
             warning("That command was not found. Use X to see all commands.")

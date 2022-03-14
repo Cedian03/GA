@@ -16,7 +16,7 @@ from util import SEND_BYTE
 
 @decodecorator("message_str", "contact_name")
 def send_message(**kwargs):
-    """send message contact
+    """send <message_str> <contact_name>
     """
 
     message_str = kwargs["message_str"]
@@ -76,13 +76,17 @@ def _serial_write(payload_bytes: bytes):
         if ser.out_waiting:
             debug("Serial out not empty when sending")
 
+        ser.flushInput()
+        ser.flushOutput()
+
         ser.write(SEND_BYTE + payload_bytes)
 
         # read
         sleep(3)
         while ser.in_waiting:
-            print(ser.readline())
+            returned_bytes = ser.readline()
 
+        return payload_bytes == returned_bytes
 
 if __name__ == "__main__":
     send_message("Hej Charlie", "Charlie")

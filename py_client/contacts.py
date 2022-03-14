@@ -1,6 +1,6 @@
 import json
 
-from util import Contact, decodecorator, success, info, warning, danger
+from util import Contact, decodecorator, load_contacts, success, info, warning, danger
 from util import load_contact
 
 
@@ -54,21 +54,16 @@ def remove_contact(**kwargs):
 
 @decodecorator()
 def list_contacts(**kwargs):
-    """list
+    """list 
     """
-
-    with open("contacts.json", "rb") as f:
-        contacts = json.load(f)
-
-    for i in contacts:
-        contact_name = i["name"]
-        contact_info = i["info"]
-        contact_key = i[""]
-        
-        
-        # info(f"{contact_name}\t: {contact_info}")
-        # info(f"{contact_name}\t: {contact_info} {'\tNo key' if not contact_key else ''}")
-
+    contacts = load_contacts()
+    
+    for contact in contacts:
+        info(f"{contact.name}\t: ", end="")
+        if contact.public_key:
+            info(contact.info)
+        else:
+            warning("No public key avalible")
 
 if __name__ == "__main__":
-    pass
+    list_contacts()
