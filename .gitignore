@@ -3,5 +3,5 @@ __pycache__
 /py_client/contacts/*
 /py_client/self/*
 /py_client/__pycache__
-/node/rx
-/node/tx
+/node/* 
+!/node/node.ino
