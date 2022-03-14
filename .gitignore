@@ -1,7 +1,4 @@
 __pycache__
 
-py_client/contacts/*
-py_client/self/*
-
 node/ 
-! node/node.ino
+!node/node.ino
