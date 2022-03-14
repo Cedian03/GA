@@ -1,9 +1,12 @@
 const int BUFFER_SIZE = 4096;
 char buf[BUFFER_SIZE];
-const byte TRIG_BYTE = 47; // == "/"
-const byte SEND_BYTE = 83; // == "S"
-const byte READ_BYTE = 82; // == "R"
 
+byte stored_messages[8]; 
+
+const byte LINE_BYTE = 10; // == "\n"
+const byte SEND_BYTE = 83; // == "S" 
+const byte READ_BYTE = 82; // == "R" 
+const byte CONF_BYTE = 67; // == "C"
 
 void setup() {
   Serial.begin(115200); // opens serial port, sets data rate to 115200 bps
@@ -12,28 +15,26 @@ void setup() {
 void loop() {
   // check if data is available
   if (Serial.available() > 0) { 
-    byte firstIncomingByte = Serial.peek(); // check first byte
-    Serial.readBytes(buf, BUFFER_SIZE); // read all bytes
+    byte firstByte = Serial.read(); // read first byte
 
-    if (firstIncomingByte == TRIG_BYTE) { 
-      switch (buf[1]) {
-        case SEND_BYTE: {
-          Serial.print(buf); 
-          break;
-        }
-        case READ_BYTE: {
-          Serial.print("READ");
-          break;
-        }
+    switch (firstByte) {
+      case SEND_BYTE: {
+        Serial.readBytesUntil(LINE_BYTE, buf, BUFFER_SIZE); 
+        Serial.print(buf); 
+        break;
       }
-    } 
+      case READ_BYTE: {
+        Serial.print("READ");
+        break;
+      }
+      case LINE_BYTE: {
+        Serial.print("BEGINS WITH LINE_BYTE");
+        break;
+      }
+    }
 
-    // if (strcmp(buf, TRIGGER) == 0){
-    //   Serial.println("Triggered"); 
-    // } 
 
-    while (Serial.read() >= 0) {}
-    
-    memset(buf, 0, sizeof(buf)); // clear buf variable 
+    // while (Serial.read() >= 0) {} // empty incoming serial data
+    memset(buf, 0, BUFFER_SIZE); // clear buf variable // sizeof(buf)
   }
 }

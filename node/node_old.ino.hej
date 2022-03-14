@@ -1,0 +1,42 @@
+const int BUFFER_SIZE = 4096;
+char buf[BUFFER_SIZE];
+
+const byte LINE_BYTE = 10; // == "\n"
+// const byte TRIG_BYTE = 47; // == "/"
+// const byte SEND_BYTE = 83; // == "S"
+// const byte READ_BYTE = 82; // == "R"
+
+const byte SEND_BYTE = 7; // == "\a" Bell
+const byte READ_BYTE = 8; // == "\b" Backspace
+
+void setup() {
+  Serial.begin(115200); // opens serial port, sets data rate to 115200 bps
+}
+
+void loop() {
+  // check if data is available
+  if (Serial.available() > 0) { 
+    byte firstIncomingByte = Serial.read(); // check first byte
+    // Serial.readBytes(buf, BUFFER_SIZE); // read all bytes
+
+    if (firstIncomingByte == TRIG_BYTE) { 
+      Serial.readBytesUntil(LINE_BYTE, buf, BUFFER_SIZE); // read first row, expecting "/R" || "/S"
+      
+      switch (buf[1]) {
+        case SEND_BYTE: {
+          Serial.readBytesUntil(LINE_BYTE, buf, BUFFER_SIZE); 
+          
+          Serial.print(buf); 
+          break;
+        }
+        case READ_BYTE: {
+          Serial.print("READ");
+          break;
+        }
+      }
+    } 
+
+    while (Serial.read() >= 0) {} // empty incoming serial data
+    memset(buf, 0, BUFFER_SIZE); // clear buf variable // sizeof(buf)
+  }
+}

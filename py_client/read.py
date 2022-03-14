@@ -6,12 +6,12 @@ from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.asymmetric import padding
 from cryptography.hazmat.primitives.asymmetric.rsa import RSAPublicKey
 
-from util import ser_port
-from util import ser_baudrate
+from util import SER_PORT
+from util import SER_BAUDRATE
 from util import PRIVATE_KEY
 
 def read_message(*args):
-    with Serial(ser_port, ser_baudrate, timeout=1) as ser:
+    with Serial(SER_PORT, SER_BAUDRATE, timeout=1) as ser:
         if ser.out_waiting:
             print("Serial out not empty when sending", style="warning")
 

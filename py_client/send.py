@@ -6,11 +6,12 @@ from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.asymmetric import padding
 from cryptography.hazmat.primitives.asymmetric.rsa import RSAPublicKey
 
-from util import danger, debugger, warning
+from util import debug, debugger
 from util import load_contact
-from util import ser_port
-from util import ser_baudrate
+from util import SER_PORT
+from util import SER_BAUDRATE
 from util import PRIVATE_KEY
+from util import SEND_BYTE
 
 @debugger
 def send_message(*args):
@@ -69,12 +70,11 @@ def _bytes_to_dict(ciphertext_bytes: bytes, signature_bytes: bytes):
 
 
 def _serial_write(payload_bytes: bytes):
-    with Serial(ser_port, ser_baudrate, timeout=1) as ser:
+    with Serial(SER_PORT, SER_BAUDRATE, timeout=1) as ser:
         if ser.out_waiting:
-            print("Serial out not empty when sending", style="warning")
+            debug("Serial out not empty when sending")
 
-        ser.write(b"/S\n" + payload_bytes)
-        # ser.write(b"/r")
+        ser.write(SEND_BYTE + payload_bytes)
 
         # read
         sleep(3)
