@@ -1,7 +1,7 @@
 __pycache__
-/old/
-/py_client/contacts/*
-/py_client/self/*
-/py_client/__pycache__
-/node/* 
-!/node/node.ino
+
+py_client/contacts/*
+py_client/self/*
+
+node/ 
+! node/node.ino
