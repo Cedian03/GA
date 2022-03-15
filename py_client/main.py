@@ -8,10 +8,11 @@ COMMANDS = {
     "read": read_messages,
     "list": list_contacts,
     "cadd": add_contact,
-    "crmv": remove_contact
+    "crmv": remove_contact,
+    "help": list_contacts
 }
 
-def help(*args):
+def list_contacts(*args, **kwargs):
     pass
 
 def loop():
@@ -23,7 +24,7 @@ def loop():
         if cmd.lower() in COMMANDS.keys():
             COMMANDS[cmd](*par)
         else:
-            warning("That command was not found. Use X to see all commands.")
+            warning("That command was not found. Use \"help\" to see all commands.")
         
 
 if __name__ == "__main__":
