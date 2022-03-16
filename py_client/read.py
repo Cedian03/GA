@@ -7,7 +7,7 @@ from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.asymmetric import padding
 from cryptography.hazmat.primitives.asymmetric.rsa import RSAPublicKey
 
-from util import decodecorator, load_contacts
+from util import Contact, decodecorator, load_contacts
 from util import PRIVATE_KEY, READ_BYTE, SER_PORT, SER_BAUDRATE
 
 @dataclass
@@ -20,18 +20,18 @@ def read_messages(*args, **kwargs):
     """read <?limit>
     """
     with Serial(SER_PORT, SER_BAUDRATE, timeout=1) as ser:
-        _read_init()
+        _read_init(ser)
         
-        _save_incoming_messages()
-        messages = _load_saved_messages()
+        _save_incoming_messages(ser)
+        messages = _load_stored_messages()
         
         _display_messages(messages, kwargs["limit"])
             
-def _read_init():
+def _read_init(ser: Serial):
     ser.write(READ_BYTE)
     sleep(3)
 
-def _save_incoming_messages():
+def _save_incoming_messages(ser: Serial):
     messages = _load_stored_messages()
     while ser.in_incoming:
         payload_dict = ser.readLine()
