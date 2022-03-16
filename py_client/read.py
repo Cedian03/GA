@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from json import loads
+from json import dump, load, loads
 from serial import Serial
 from time import sleep
 
@@ -16,30 +16,48 @@ from util import PRIVATE_KEY, READ_BYTE, SER_PORT, SER_BAUDRATE
 #     sender: Contact | None
 #     reciver: Contact | None
 
-@decodecorator()
+@decodecorator("limit")
 def read_messages(*args, **kwargs):
-    """read
+    """read <?limit>
     """
     with Serial(SER_PORT, SER_BAUDRATE, timeout=1) as ser:
         _read_init()
         
-        # while ser.in_incoming:
-        #     incoming_dict = ser.readLine()
-        #     ciphertext_bytes, signature_bytes = _dict_to_bytes(incoming_dict)
-        #     
-        #     plaintext_bytes = _decrypt_bytes(ciphertext_bytes) # err if not for me
-        #     sender_contact = _identify_sender(signature_bytes, plaintext_bytes)
-        #     
-        #     plaintext_str = plaintext_bytes.decode()
+        _save_incoming_messages()
+        messages = _load_saved_messages()
+        
+        _display_messages(messages, kwargs["limit"])
+        
             
 def _read_init():
     ser.write(READ_BYTE)
     sleep(3)
 
 def _save_incoming_messages():
-    pass
+    messages = []
+    while ser.in_incoming:
+        payload_dict = ser.readLine()
+        ciphertext_bytes, signature_bytes = _dict_to_bytes(payload_dict)
+        
+        plaintext_bytes = _decrypt_bytes(ciphertext_bytes) # err 
+        sender_contact = _identify_sender(signature_bytes, plaintext_bytes)
+        
+        plaintext_str = plaintext_bytes.decode()
+        
+        messages.append(Message(
+            plaintext_str,
+            sender_contact
+        ))
+        
+    with open("history.json", "w") as f:
+        dump(messages, f)
 
 def _load_stored_messages():
+    with open("history.json", "w") as f:
+        messages = load(f)
+    return messages
+
+def _display_messages(messages: list[Message], limit: int):
     pass
 
 def _decrypt_bytes(ciphertext_bytes: bytes):
@@ -75,8 +93,8 @@ def _verify_bytes(signature_bytes: bytes, plaintext_bytes: bytes, verification_k
     except: return False
     else: return True
 
-def _dict_to_bytes(payload_bytes: bytes):
-    payload_dict = loads(payload_bytes.decode())
+def _dict_to_bytes(payload_dict: bytes):
+    payload_dict = loads(payload_dict.decode())
 
     ciphertext_str = payload_dict["ciphertext"]
     signature_str = payload_dict["signature"]
