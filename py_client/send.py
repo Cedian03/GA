@@ -15,7 +15,7 @@ from util import SEND_BYTE
 
 
 @decodecorator("message_str", "contact_name")
-def send_message(**kwargs):
+def send_message(*args, **kwargs):
     """send <message_str> <contact_name>
     """
 
