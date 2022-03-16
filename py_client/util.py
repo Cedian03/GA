@@ -34,8 +34,8 @@ custom_theme = Theme({
 })
 console = Console(theme=custom_theme)
 
-def success(text):
-    return console.print(text, style="success")
+def success(*args, **kwargs):
+    return console.print(*args, **kwargs, style="success")
 
 def info(*args, **kwargs):
     return console.print(*args, **kwargs, style="info")
@@ -43,11 +43,11 @@ def info(*args, **kwargs):
 def debug(text): 
     if DEBUG_MODE: return console.print(f"Debug: {text}", style="debug")
 
-def warning(text):
-    return console.print(text, style="warning")
+def warning(*args, **kwargs):
+    return console.print(*args, **kwargs, style="warning")
 
-def danger(text):
-    return console.print(text, style="danger")
+def danger(*args, **kwargs):
+    return console.print(*args, **kwargs, style="danger")
 
 def decodecorator(*kws):
     def decorator(fun):
