@@ -54,12 +54,12 @@ def decodecorator(*kws):
         def wrapper(*args):
             if len(args) >= len(kws):
                 if len(args) > len(kws): 
-                    debug("too many args")
+                    debug(f"Too many arguments provided, only expected \"{kws}\" ({len(kws)})")
                 kwargs = {}
                 for idx, i in enumerate(kws):
                     kwargs[i] = args[idx]
                 return fun(**kwargs)
-            warning(f"Too few arguments provided, expected \"{kws}\"")
+            warning(f"Too few arguments provided, expected \"{kws}\" ({len(kws)})")
         return wrapper
     return decorator
 
