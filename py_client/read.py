@@ -19,13 +19,16 @@ class Message:
 def read_messages(*args, **kwargs):
     """read <?limit>
     """
+
+    limit = int(kwargs["limit"])
+
     with Serial(SER_PORT, SER_BAUDRATE, timeout=1) as ser:
         _read_init(ser)
         
         _save_incoming_messages(ser)
         messages = _load_stored_messages()
         
-        _display_messages(messages, kwargs["limit"])
+        _display_messages(messages, limit)
             
 def _read_init(ser: Serial):
     ser.write(READ_BYTE)
