@@ -10,11 +10,10 @@ from cryptography.hazmat.primitives.asymmetric.rsa import RSAPublicKey
 from util import decodecorator, load_contacts
 from util import PRIVATE_KEY, READ_BYTE, SER_PORT, SER_BAUDRATE
 
-# @dataclass
-# class Message:
-#     message: str
-#     sender: Contact | None
-#     reciver: Contact | None
+@dataclass
+class Message:
+    message: str
+    sender: Contact | None
 
 @decodecorator("limit")
 def read_messages(*args, **kwargs):
@@ -27,14 +26,13 @@ def read_messages(*args, **kwargs):
         messages = _load_saved_messages()
         
         _display_messages(messages, kwargs["limit"])
-        
             
 def _read_init():
     ser.write(READ_BYTE)
     sleep(3)
 
 def _save_incoming_messages():
-    messages = []
+    messages = _load_stored_messages()
     while ser.in_incoming:
         payload_dict = ser.readLine()
         ciphertext_bytes, signature_bytes = _dict_to_bytes(payload_dict)
@@ -53,7 +51,7 @@ def _save_incoming_messages():
         dump(messages, f)
 
 def _load_stored_messages():
-    with open("history.json", "w") as f:
+    with open("history.json", "r") as f:
         messages = load(f)
     return messages
 
