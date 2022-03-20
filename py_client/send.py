@@ -1,17 +1,13 @@
 from json import dumps
-from serial import Serial
 from time import sleep
 
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.asymmetric import padding
 from cryptography.hazmat.primitives.asymmetric.rsa import RSAPublicKey
+from serial import Serial
 
-from util import debug, debugdeco, decodecorator
-from util import load_contact
-from util import SER_PORT
-from util import SER_BAUDRATE
-from util import PRIVATE_KEY
-from util import SEND_BYTE
+from util import (PRIVATE_KEY, SEND_BYTE, SER_BAUDRATE, SER_PORT, debug,
+                  debugdeco, decodecorator, load_contact)
 
 
 @decodecorator("message_str", "contact_name")

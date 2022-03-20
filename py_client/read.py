@@ -1,14 +1,15 @@
 from dataclasses import dataclass
 from json import dump, load, loads
-from serial import Serial
 from time import sleep
 
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.asymmetric import padding
 from cryptography.hazmat.primitives.asymmetric.rsa import RSAPublicKey
+from serial import Serial
 
-from util import Contact, decodecorator, load_contacts
-from util import PRIVATE_KEY, READ_BYTE, SER_PORT, SER_BAUDRATE
+from util import (PRIVATE_KEY, READ_BYTE, SER_BAUDRATE, SER_PORT, Contact,
+                  decodecorator, load_contacts)
+
 
 @dataclass
 class Message:

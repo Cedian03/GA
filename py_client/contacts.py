@@ -1,7 +1,7 @@
 import json
 
-from util import Contact, decodecorator, load_contacts, success, info, warning, danger
-from util import load_contact
+from util import (Contact, danger, decodecorator, info, load_contact,
+                  load_contacts, success, warning)
 
 
 @decodecorator("contact_name", "contact_info")

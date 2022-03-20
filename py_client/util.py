@@ -1,11 +1,10 @@
 # from base64 import decodebytes
 # from base64 import encodebytes
-from dataclasses import dataclass
 import json
+from dataclasses import dataclass
 
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric.rsa import RSAPublicKey
-
 
 DEBUG_MODE = True
 
@@ -25,6 +24,7 @@ class Contact:
 #rich: https://rich.readthedocs.io/en/latest/index.html
 from rich.console import Console
 from rich.theme import Theme
+
 custom_theme = Theme({
     "success": "bold green",
     "info": "bold white",

@@ -1,6 +1,6 @@
-from send import send_message
-from read import read_messages
 from contacts import add_contact, list_contacts, remove_contact
+from read import read_messages
+from send import send_message
 from util import parse, warning
 
 COMMANDS = {
