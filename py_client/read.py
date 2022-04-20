@@ -16,20 +16,20 @@ class Message:
     message: str
     sender: Contact | None
 
-@decodecorator("limit")
 def read_messages(*args, **kwargs):
-    """read <?limit>
+    """read <limit>
     """
 
-    limit = int(kwargs["limit"])
+    ser = kwargs["ser"]
 
-    with Serial(SER_PORT, SER_BAUDRATE, timeout=1) as ser:
-        _read_init(ser)
-        
-        _save_incoming_messages(ser)
-        messages = _load_stored_messages()
-        
-        _display_messages(messages, limit)
+    limit = int(args[0])
+
+    _read_init(ser)
+    
+    _save_incoming_messages(ser)
+    messages = _load_stored_messages()
+    
+    _display_messages(messages, limit)
             
 def _read_init(ser: Serial):
     ser.write(READ_BYTE)
@@ -37,8 +37,9 @@ def _read_init(ser: Serial):
 
 def _save_incoming_messages(ser: Serial):
     messages = _load_stored_messages()
-    while ser.in_incoming:
-        payload_dict = ser.readLine()
+    while ser.in_waiting:
+        payload_dict = _read_incoming_bytes(ser)
+        print(payload_dict, payload_dict.__sizeof__())
         ciphertext_bytes, signature_bytes = _dict_to_bytes(payload_dict)
         
         plaintext_bytes = _decrypt_bytes(ciphertext_bytes) # err 
@@ -54,13 +55,27 @@ def _save_incoming_messages(ser: Serial):
     with open("history.json", "w") as f:
         dump(messages, f)
 
+def _read_incoming_bytes(ser: Serial):
+    START_BYTE = b"\x08"
+
+    while ser.in_waiting:
+        byte = ser.read()
+        if byte == START_BYTE:
+            incoming_bytes = ser.read_until("\n")
+            print(incoming_bytes)
+            return incoming_bytes
+
+
+
 def _load_stored_messages():
     with open("history.json", "r") as f:
         messages = load(f)
     return messages
 
 def _display_messages(messages: list[Message], limit: int):
-    pass
+    for i, v in enumerate(messages):
+        if i >= limit: break
+        print(v.message)
 
 def _decrypt_bytes(ciphertext_bytes: bytes):
     plaintext_bytes = PRIVATE_KEY.decrypt(

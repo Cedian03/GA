@@ -15,16 +15,13 @@ ser = Serial(PORT, BAUDRATE, timeout=1)
 
 thread_running = True
 
-START_BYTE = b"\x08"
-
 def send():
     global thread_running
 
     while thread_running:
         inp = input().encode()
         if inp != b"":
-            test = inp # eval(open("test.txt", "r").read())
-            ser.write(test)
+            ser.write(inp)
         else:
             thread_running = False
 
@@ -34,7 +31,7 @@ def read():
     while thread_running:
         while ser.in_waiting:
             line = ser.readline()
-            print(line)
+            print(line.decode("latin1").strip())
             # byte = ser.read()
             # if byte == START_BYTE:
             #     incoming_bytes = ser.read_until(b"\x07")
